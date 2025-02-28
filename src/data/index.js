@@ -410,7 +410,6 @@ function renderFetchedMoviesHtml(searchResultsArr) {
           data-poster="${movie.poster_path}" 
           data-title="${movie.title}"
           data-overview="${movie.overview}"
-          data-genres="${movie.genre_ids}" 
           aria-label="Add movie to watchlist"
           >
             <img
@@ -449,7 +448,6 @@ async function addMovieToWatchlist(event) {
         title: dataAttribute.title,
         overview: dataAttribute.overview,
         id: dataAttribute.id,
-        genres: dataAttribute.genres,
         uid: user.uid,
       });
       console.log(`Movie written with ID: ${dataAttribute.id} `);
@@ -494,9 +492,6 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
         </div>
         <div class="watchlist-movie-secondary">
           <h2 class="watchlist-movie-heading">${movieData.title}</h2>
-          <p class="movie-genres">GENRES : ${getMovieGenreName(
-            movieData.genres
-          ).join(", ")}</p>
           <p class="watchlist-overview">OVERVIEW : ${movieData.overview}</p>
           <div class="watchlist-btn-container">
             <button class="delete-from-watchlist-btn"
@@ -505,7 +500,6 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
               data-poster="${movieData.poster}" 
               data-title="${movieData.title}"
               data-overview="${movieData.overview}"
-              data-genres="${movieData.genres}"
               aria-label="Delete movie from watchlist">
               <img
                 class="delete-from-watchlist-icon"
@@ -537,7 +531,6 @@ async function deleteMovieFromWatchlist(event) {
         title: dataAttribute.title,
         overview: dataAttribute.overview,
         id: dataAttribute.id,
-        genres: dataAttribute.genres,
         uid: user.uid,
       });
       console.log(`Delete movie written with ID: ${dataAttribute.id} `);
