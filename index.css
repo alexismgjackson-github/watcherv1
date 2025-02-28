@@ -322,6 +322,7 @@ hr {
 
 .search-btn-container {
   margin: auto;
+  padding: 2rem;
 }
 
 .search-btn {
@@ -545,6 +546,11 @@ hr {
 @media only screen and (min-width: 992px) {
   .search {
     margin-bottom: 20rem;
+  }
+
+  .search-btn-container {
+    margin: auto;
+    padding: 4rem;
   }
 
   .movie {

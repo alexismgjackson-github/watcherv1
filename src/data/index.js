@@ -116,8 +116,14 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
+/*
+Correctly Reference Environment Variables by making sure that you are using the VITE_ prefix, as Vite 
+(a modern build tool) only exposes environment variables prefixed with VITE_ to your front-end code.
+*/
+
 const baseUrl = "https://api.themoviedb.org/";
-const apiKey = "c073b993bfd587ff8250925f5296110a";
+const apiKey = import.meta.env.VITE_WATCHER_API_KEY;
+console.log(`API KEY: ${apiKey}`);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
