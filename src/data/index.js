@@ -116,14 +116,11 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
-/*
-Correctly Reference Environment Variables by making sure that you are using the VITE_ prefix, as Vite 
-(a modern build tool) only exposes environment variables prefixed with VITE_ to your front-end code.
-*/
-
 const baseUrl = "https://api.themoviedb.org/";
-const apiKey = import.meta.env.VITE_WATCHER_API_KEY;
-console.log(`API KEY: ${apiKey}`);
+const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+
+// if the user has successfully created an account allow them to log in, else stay logged out
+// if the user successfully logs in then get the user's data and render their movies in watchlist modal if they already exist
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -154,6 +151,9 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ======== Functions - Firebase  ============================================================= ////
+
+// when the user successfully logs in reset the input fields
+// or if log in fails show user error
 
 function authLogInWithEmail() {
   const email = loginEmailInput.value;
@@ -187,7 +187,7 @@ function authSignOut() {
   signOut(auth)
     .then(() => {
       searchResults.innerHTML = "";
-      location.reload();
+      location.reload(); // temporary solution to render watchlist changes
       resetCreateAcccountMessages();
     })
     .catch((error) => {
@@ -327,6 +327,8 @@ function clearRegisterAuthFields() {
   clearInputField(registerPasswordInput);
 }
 
+// toggle user's password visibility
+
 function showRegisterPassword() {
   if (registerPasswordInput.type === "password") {
     registerPasswordInput.type = "text";
@@ -351,6 +353,11 @@ function handleClickSearch(event) {
   fetchMovies(yarn.value);
 }
 
+// fetch data from from TMDB with hidden api key by on user's input
+// filter data that is missing posters, overviews and genres
+// if the data is successfully fetched then show the search results and its quantity
+// else show error
+
 function fetchMovies(inputValue) {
   fetch(`${baseUrl}3/search/movie?query=${inputValue}&api_key=${apiKey}`)
     .then((response) => response.json())
@@ -373,6 +380,9 @@ function fetchMovies(inputValue) {
       }
     });
 }
+
+// render fetched movies and their details in search results container
+// add information (datasets) and an ID to each "Add To Watchlist" button
 
 function renderFetchedMoviesHtml(searchResultsArr) {
   let html = "";
@@ -400,6 +410,7 @@ function renderFetchedMoviesHtml(searchResultsArr) {
           data-poster="${movie.poster_path}" 
           data-title="${movie.title}"
           data-overview="${movie.overview}"
+          data-genres="${movie.genre_ids}" 
           aria-label="Add movie to watchlist"
           >
             <img
@@ -422,6 +433,11 @@ function renderFetchedMoviesHtml(searchResultsArr) {
   // console.log(movie);
 }
 
+// when user doubleclicks on "Add To Watchlist" button in search results - if an ID and dataset exists
+// create an object of the movie's details with UID
+// add the movie object to the database if it does not already exists
+// reload page to render changes in the database
+
 async function addMovieToWatchlist(event) {
   if (event.target.dataset.id) {
     let dataAttribute = event.target.dataset;
@@ -433,6 +449,7 @@ async function addMovieToWatchlist(event) {
         title: dataAttribute.title,
         overview: dataAttribute.overview,
         id: dataAttribute.id,
+        genres: dataAttribute.genres,
         uid: user.uid,
       });
       console.log(`Movie written with ID: ${dataAttribute.id} `);
@@ -456,6 +473,11 @@ function closeWatchlistModal() {
   document.body.style.overflow = "scroll";
 }
 
+// render movies with information from data object created earlier
+// deleted genres from watchlist movies because of this error below:
+// Uncaught(in promise) TypeError: Cannot read properties of undefined(reading 'map')
+// will need to find a solution later
+
 function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
   emptyWatchlist.innerHTML = "";
 
@@ -472,6 +494,9 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
         </div>
         <div class="watchlist-movie-secondary">
           <h2 class="watchlist-movie-heading">${movieData.title}</h2>
+          <p class="movie-genres">GENRES : ${getMovieGenreName(
+            movieData.genres
+          ).join(", ")}</p>
           <p class="watchlist-overview">OVERVIEW : ${movieData.overview}</p>
           <div class="watchlist-btn-container">
             <button class="delete-from-watchlist-btn"
@@ -480,6 +505,7 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
               data-poster="${movieData.poster}" 
               data-title="${movieData.title}"
               data-overview="${movieData.overview}"
+              data-genres="${movieData.genres}"
               aria-label="Delete movie from watchlist">
               <img
                 class="delete-from-watchlist-icon"
@@ -496,6 +522,10 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
       `;
 }
 
+// when user doubleclicks on "Delete From Watchlist" button in watchlist - if an ID and dataset exists
+// remove the movie object from the database
+// reload page to render changes in the database
+
 async function deleteMovieFromWatchlist(event) {
   if (event.target.dataset.id) {
     let dataAttribute = event.target.dataset;
@@ -507,6 +537,7 @@ async function deleteMovieFromWatchlist(event) {
         title: dataAttribute.title,
         overview: dataAttribute.overview,
         id: dataAttribute.id,
+        genres: dataAttribute.genres,
         uid: user.uid,
       });
       console.log(`Delete movie written with ID: ${dataAttribute.id} `);

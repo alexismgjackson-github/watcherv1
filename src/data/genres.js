@@ -1,3 +1,5 @@
+// pass in genre IDS - if the ID matches then display the genre's name (string)
+
 function getMovieGenreName(array) {
   return array.map(function (id) {
     switch (id) {
