@@ -48,6 +48,10 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 - Fetching data from TMDB API, handling the response and errors
 - Filtering undesired search results (such as explicit movie content)
 
+### _HIDING API KEYS_
+
+- Utilizing NodeJS and "VITE" prefix when creating and processing enviromental variables
+
 ### _RESPONSIVE WEB DESIGN_
 
 - Implementing media queries to add device breakpoints
