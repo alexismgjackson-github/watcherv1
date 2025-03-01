@@ -120,7 +120,7 @@ const baseUrl = "https://api.themoviedb.org/";
 const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
 
 // if the user has successfully created an account allow them to log in, else stay logged out
-// if the user successfully logs in then get the user's data and render their movies in watchlist modal if they already exist
+// if the user successfully logs in then get the user's data and render their data in watchlist modal if it exists
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -354,7 +354,7 @@ function handleClickSearch(event) {
 }
 
 // fetch data from from TMDB with hidden api key by on user's input
-// filter data that is missing posters, overviews and genres
+// filter data that has posters, overviews and genres
 // if the data is successfully fetched then show the search results and its quantity
 // else show error
 
@@ -432,7 +432,7 @@ function renderFetchedMoviesHtml(searchResultsArr) {
   // console.log(movie);
 }
 
-// when user doubleclicks on "Add To Watchlist" button in search results - if an ID and dataset exists
+// when user doubleclicks on "Add To Watchlist" button in search results - if an ID exists in the dataset
 // create an object of the movie's details with UID
 // add the movie object to the database if it does not already exists
 // reload page to render changes in the database
@@ -471,10 +471,7 @@ function closeWatchlistModal() {
   document.body.style.overflow = "scroll";
 }
 
-// render movies with information from data object created earlier
-// deleted genres from watchlist movies because of this error below:
-// Uncaught(in promise) TypeError: Cannot read properties of undefined(reading 'map')
-// will need to find a solution later
+// render movies in the watchlist with the information from the object created earlier
 
 function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
   emptyWatchlist.innerHTML = "";
@@ -516,7 +513,7 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
       `;
 }
 
-// when user doubleclicks on "Delete From Watchlist" button in watchlist - if an ID and dataset exists
+// when user doubleclicks on "Delete From Watchlist" button in watchlist - if an ID exists in the dataset
 // remove the movie object from the database
 // reload page to render changes in the database
 
