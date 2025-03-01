@@ -41,7 +41,6 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 - Creating security rules to restrict read and write access to authenticated users
 - Adding object datatypes via setDoc
 - Removing object datatypes via deleteDoc
-- Updating in the app via onSnapshot
 
 ### _FETCHING DATA_
 
@@ -51,7 +50,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 
 ### _HIDING API KEYS_
 
-- Utilizing NodeJS and "VITE_" prefix when creating and processing enviromental variables in a Vite project
+- Utilizing NodeJS and "VITE\_" prefix when creating and processing enviromental variables in a Vite project
 
 ### _RESPONSIVE WEB DESIGN_
 
@@ -67,6 +66,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 ## MOST CHALLENGING
 
 - Displaying the genres - the data response from TMDB API only gave the genre IDS (numbers) but not the matching genre name (text). I ended up finding that information on TMDB's API Support and Stackoverflow and displayed the genres using Switch Statements.
+- Hiding the keys
 
 ## BUGS
 
@@ -76,6 +76,6 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 ## FUTURE UPDATES
 
 - Solve existing bugs
-- Convert app from JavaScript to React and React Router
+- Convert app from JavaScript to React and React Router (maybe Watcher v2)
 - Add filtering of movies via genres in the watchlist
 - Toggle completed of movies in the watchlist
