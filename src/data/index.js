@@ -119,8 +119,13 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 const baseUrl = "https://api.themoviedb.org/";
 const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
 
-// if the user has successfully created an account allow them to log in, else stay logged out
-// if the user successfully logs in then get the user's data and render their data in watchlist modal if it exists
+// if the user is LOGGED IN - query the "movies" collection for the user's movies
+// wait for the movies to be fetched
+// log each movie title to the console
+// render the movie data on the page
+// after a 2-second delay, it displays the logged-in view
+// if the user is LOGGED OUT - wait for 500ms and then show the logged-out view
+// log to the console that no user is currently signed in
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -432,10 +437,12 @@ function renderFetchedMoviesHtml(searchResultsArr) {
   // console.log(movie);
 }
 
-// when user doubleclicks on "Add To Watchlist" button in search results - if an ID exists in the dataset
-// create an object of the movie's details with UID
-// add the movie object to the database if it does not already exists
+// when user doubleclicks on "Add To Watchlist" button in search results -
+// check if the target element has a data-id attribute
+// if its true, create an object of the movie's details with UID
+// add the movie object to the database (if it does not already exists)
 // reload page to render changes in the database
+// if an error occurs at any point, log an error message
 
 async function addMovieToWatchlist(event) {
   if (event.target.dataset.id) {
@@ -513,9 +520,11 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
       `;
 }
 
-// when user doubleclicks on "Delete From Watchlist" button in watchlist - if an ID exists in the dataset
-// remove the movie object from the database
+// when user doubleclicks on "Delete From Watchlist" button in watchlist -
+// check if the target element has a data-id attribute
+// if its true, remove the movie object from the database
 // reload page to render changes in the database
+// if an error occurs at any point, log an error message
 
 async function deleteMovieFromWatchlist(event) {
   if (event.target.dataset.id) {
