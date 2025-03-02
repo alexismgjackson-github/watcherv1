@@ -367,9 +367,10 @@ function handleClickSearch(event) {
 // render them on the page and updates the UI to display the number of movies found
 // if no results are found, show a message to the user indicating that no movies were found and ask them to try again
 
-const dotenv = require("dotenv");
+require("dotenv").config();
 const baseUrl = "https://api.themoviedb.org/";
-const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+const apiKey = process.env.WATCHER_API_KEY;
+//const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
 console.log(`API Key: ${apiKey}`);
 
 function fetchMovies(inputValue) {
