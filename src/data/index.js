@@ -361,8 +361,8 @@ function handleClickSearch(event) {
 }
 
 const baseUrl = "https://api.themoviedb.org/";
-const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
-console.log(`API Key: ${apiKey}`);
+//const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+console.log(`API Key: ${import.meta.env.VITE_WATCHER_API_KEY}`);
 
 // send a request to the movie database API, passing the search query (inputValue) and API key
 // once the data is fetched, filter out the movies that don’t have a poster, overview and genres
