@@ -1,4 +1,5 @@
 // ========  Imports  ============================================================= ////
+
 import { getMovieGenreName } from "./genres.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 
@@ -22,6 +23,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // ======== Firebase setup  ============================================================= ////
+
 const firebaseConfig = {
   apiKey: "AIzaSyD3oXhhIntMetNecqI5f5NwOIz5BKD7dOw",
   authDomain: "watcher-d12f5.firebaseapp.com",
