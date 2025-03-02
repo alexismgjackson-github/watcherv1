@@ -370,7 +370,11 @@ console.log(`API Key: ${import.meta.env.VITE_WATCHER_API_KEY}`);
 // if no results are found, show a message to the user indicating that no movies were found and ask them to try again
 
 function fetchMovies(inputValue) {
-  fetch(`${baseUrl}3/search/movie?query=${inputValue}&api_key=${apiKey}`)
+  fetch(
+    `${baseUrl}3/search/movie?query=${inputValue}&api_key=${
+      import.meta.env.VITE_WATCHER_API_KEY
+    }`
+  )
     .then((response) => response.json())
     .then((data) => {
       const fetchedMovies = data.results;
