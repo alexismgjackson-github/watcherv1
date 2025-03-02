@@ -35,6 +35,10 @@ const app = initializeApp(firebaseConfig); // initialize firebase
 const auth = getAuth(app); // get a reference to the authentication service
 const db = getFirestore(app); // initialize cloud firestore and get a reference to the service
 
+// ======== API setup  ============================================================= ////
+
+const baseUrl = "https://api.themoviedb.org/";
+
 // console.log(firebaseConfig.databaseURL);
 // console.log(getFirestore(app));
 
@@ -360,10 +364,6 @@ function handleClickSearch(event) {
   fetchMovies(yarn.value);
 }
 
-const baseUrl = "https://api.themoviedb.org/";
-//const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
-console.log(`API Key: ${import.meta.env.VITE_WATCHER_API_KEY}`);
-
 // send a request to the movie database API, passing the search query (inputValue) and API key
 // once the data is fetched, filter out the movies that don’t have a poster, overview and genres
 // render them on the page and updates the UI to display the number of movies found
@@ -372,7 +372,7 @@ console.log(`API Key: ${import.meta.env.VITE_WATCHER_API_KEY}`);
 function fetchMovies(inputValue) {
   fetch(
     `${baseUrl}3/search/movie?query=${inputValue}&api_key=${
-      import.meta.env.VITE_WATCHER_API_KEY
+      import.meta.env.VITE_WATCHER_API_KEY // Vite only exposes environment variables prefixed with VITE_
     }`
   )
     .then((response) => response.json())
