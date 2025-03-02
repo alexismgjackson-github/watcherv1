@@ -397,7 +397,7 @@ hr {
   border-style: none;
   color: var(--color-extrabold);
   display: flex;
-  padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+  padding: 1rem 1.5rem;
   position: relative;
 }
 
@@ -501,7 +501,7 @@ hr {
   border-style: none;
   color: var(--color-extralight);
   display: flex;
-  padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+  padding: 1rem 1.5rem;
 }
 
 .delete-from-watchlist-icon {

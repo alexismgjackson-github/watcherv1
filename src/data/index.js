@@ -419,13 +419,8 @@ function renderFetchedMoviesHtml(searchResultsArr) {
           data-title="${movie.title}"
           data-overview="${movie.overview}"
           aria-label="Add movie to watchlist"
-          >
-            <img
-                class="add-to-watchlist-icon"
-                src="/public/assets/icons/add.svg"
-                alt="Add To Watchlist"
-            >
-            Watchlist
+          >  
+          Add To Watchlist
         </button>
         
       </div>
@@ -508,12 +503,7 @@ function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
               data-title="${movieData.title}"
               data-overview="${movieData.overview}"
               aria-label="Delete movie from watchlist">
-              <img
-                class="delete-from-watchlist-icon"
-                src="/public/assets/icons/delete.svg"
-                alt="Delete From Watchlist"
-              />
-              Watchlist
+              Delete From Watchlist
             </button>
           </div>
         </div>
