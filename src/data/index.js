@@ -118,8 +118,11 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
+/*
 const baseUrl = "https://api.themoviedb.org/";
 const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+console.log(`API Key: ${apiKey}`);
+*/
 
 // if the user is LOGGED IN - query the "movies" collection for the user's movies
 // wait for the movies to be fetched
@@ -369,6 +372,10 @@ function handleClickSearch(event) {
 // if no results are found, show a message to the user indicating that no movies were found and ask them to try again
 
 function fetchMovies(inputValue) {
+  const baseUrl = "https://api.themoviedb.org/";
+  const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+  console.log(`API Key: ${apiKey}`);
+
   fetch(`${baseUrl}3/search/movie?query=${inputValue}&api_key=${apiKey}`)
     .then((response) => response.json())
     .then((data) => {
