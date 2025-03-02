@@ -1,4 +1,6 @@
-// pass in genre IDS - if the ID matches then display the genre's name (string)
+// converts an array of genre IDs into their corresponding genre names
+// returns a new array containing the genre names
+// if an unknown genre ID is encountered, the function returns "Unknown Genre"
 
 function getMovieGenreName(array) {
   return array.map(function (id) {

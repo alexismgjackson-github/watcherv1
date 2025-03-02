@@ -184,7 +184,9 @@ function authCreateAccWithEmail() {
   const password = registerPasswordInput.value;
 
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {})
+    .then((userCredential) => {
+      showCreateAccountSuccess();
+    })
     .catch((error) => {
       console.error(error.message);
       showCreateAccountError();
@@ -335,7 +337,7 @@ function clearRegisterAuthFields() {
   clearInputField(registerPasswordInput);
 }
 
-// toggle user's password visibility
+// allows user to toggle the visibility of their password
 
 function showRegisterPassword() {
   if (registerPasswordInput.type === "password") {
