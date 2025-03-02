@@ -50,7 +50,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 
 ### _HIDING API KEYS_
 
-- Utilizing NodeJS and "VITE\_" prefix when creating and processing enviromental variables in a Vite project
+- Utilizing NodeJS and "VITE_" prefix when creating and processing enviromental variables in a Vite project
 
 ### _RESPONSIVE WEB DESIGN_
 
