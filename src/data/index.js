@@ -35,12 +35,12 @@ const app = initializeApp(firebaseConfig); // initialize firebase
 const auth = getAuth(app); // get a reference to the authentication service
 const db = getFirestore(app); // initialize cloud firestore and get a reference to the service
 
+// console.log(firebaseConfig.databaseURL);
+// console.log(getFirestore(app));
+
 // ======== API setup  ============================================================= ////
 
 const baseUrl = "https://api.themoviedb.org/";
-
-// console.log(firebaseConfig.databaseURL);
-// console.log(getFirestore(app));
 
 // ======== UI - Elements - LOGGED OUT VIEW (LOGIN)  ============================================================= ////
 
