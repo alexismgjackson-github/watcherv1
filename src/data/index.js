@@ -118,12 +118,6 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
-/*
-const baseUrl = "https://api.themoviedb.org/";
-const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
-console.log(`API Key: ${apiKey}`);
-*/
-
 // if the user is LOGGED IN - query the "movies" collection for the user's movies
 // wait for the movies to be fetched
 // log each movie title to the console
