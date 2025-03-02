@@ -22,6 +22,8 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
+import * as dotenv from "dotenv";
+
 // ======== Firebase setup  ============================================================= ////
 
 const firebaseConfig = {
@@ -365,11 +367,12 @@ function handleClickSearch(event) {
 // render them on the page and updates the UI to display the number of movies found
 // if no results are found, show a message to the user indicating that no movies were found and ask them to try again
 
-function fetchMovies(inputValue) {
-  const baseUrl = "https://api.themoviedb.org/";
-  const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
-  console.log(`API Key: ${apiKey}`);
+const dotenv = require("dotenv");
+const baseUrl = "https://api.themoviedb.org/";
+const apiKey = import.meta.env.VITE_WATCHER_API_KEY; // Vite only exposes environment variables prefixed with VITE_
+console.log(`API Key: ${apiKey}`);
 
+function fetchMovies(inputValue) {
   fetch(`${baseUrl}3/search/movie?query=${inputValue}&api_key=${apiKey}`)
     .then((response) => response.json())
     .then((data) => {
