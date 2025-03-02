@@ -157,8 +157,9 @@ onAuthStateChanged(auth, (user) => {
 
 // ======== Functions - Firebase  ============================================================= ////
 
-// when the user successfully logs in reset the input fields
-// or if log in fails show user error
+// when the user is LOGGED IN reset the input fields
+// clear messages to the user
+// or if log in fails show user error messages
 
 function authLogInWithEmail() {
   const email = loginEmailInput.value;
@@ -478,7 +479,7 @@ function closeWatchlistModal() {
   document.body.style.overflow = "scroll";
 }
 
-// render movies in the watchlist with the information from the object created earlier
+// render movies in the watchlist with dataset attributes
 
 function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
   emptyWatchlist.innerHTML = "";
