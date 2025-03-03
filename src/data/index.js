@@ -245,12 +245,8 @@ function resetUserMessage() {
 function showUserError() {
   userAuthContainer.innerHTML = `
   <div class="user-error" id="user-error">
-    <img
-    src="/public/assets/icons/error.svg"
-    alt="Red circle with exclamation point inside"
-    />
     <p class="user-auth-message error">
-      Log-in credentials are invalid. Please try again.
+      Oops! Log-in credentials are invalid. Please try again.
     </p>
   </div>
   `;
@@ -288,10 +284,6 @@ function resetCreateAcccountMessages() {
 function showCreateAccountSuccess() {
   emailAuthContainer.innerHTML = `
   <div class="email-success" id="email-success">
-    <img
-    src="/public/assets/icons/success.svg"
-    alt="Green circle with checkmark inside"
-    />
     <p class="email-auth-message success">
       Great! Your email address was successfully created.
     </p>
@@ -299,10 +291,6 @@ function showCreateAccountSuccess() {
 
   passwordAuthContainer.innerHTML = `
   <div class="password-success" id="password-success">
-    <img
-    src="/public/assets/icons/success.svg"
-    alt="Green circle with checkmark inside"
-    />
     <p class="password-auth-message success">
       Great! Your password was successfully created.
     </p>
@@ -312,10 +300,6 @@ function showCreateAccountSuccess() {
 function showCreateAccountError() {
   emailAuthContainer.innerHTML = `
   <div class="email-error" id="email-error">
-    <img
-    src="/public/assets/icons/error.svg"
-    alt="Red circle with exclamation point inside"
-    />
     <p class="email-auth-message error">
     Please enter a fake email address.
     </p>
@@ -323,10 +307,6 @@ function showCreateAccountError() {
 
   passwordAuthContainer.innerHTML = `
   <div class="password-error" id="password-error">
-    <img
-    src="/public/assets/icons/error.svg"
-    alt="Red circle with exclamation point inside"
-    />
     <p class="password-auth-message error">
       Password must contain 6 or more characters.
     </p>
