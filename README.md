@@ -46,7 +46,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 
 - Understanding TMDB API documentation such as query parameters and response format
 - Fetching data from TMDB API, handling the response and errors
-- Filtering undesired search results (such as explicit movie content)
+- Filtering desired search results
 
 ### _HIDING API KEYS_
 
