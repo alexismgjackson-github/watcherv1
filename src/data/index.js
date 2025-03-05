@@ -365,7 +365,7 @@ function fetchMovies(inputValue) {
       if (data.total_results > 0) {
         renderFetchedMoviesHtml(filteredFetchedMovies);
         // console.log(filteredFetchedMovies.length);
-        searchResultsCount.innerHTML = `${filteredFetchedMovies.length} total movies found (Double click to add movies to watchlist!)`;
+        searchResultsCount.innerHTML = `${filteredFetchedMovies.length} movies found (DOUBLE CLICK to add/delete movies from watchlist!)`;
       } else {
         // console.log("Zero results found");
         searchResults.innerHTML = `
