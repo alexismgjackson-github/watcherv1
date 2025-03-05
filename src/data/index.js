@@ -369,8 +369,8 @@ function fetchMovies(inputValue) {
       } else {
         // console.log("Zero results found");
         searchResults.innerHTML = `
-    <p id="search-message" class="search-message">Unable to find what you are looking for. Please try again!</p>
-    `;
+        <p id="search-message" class="search-message">Unable to find what you are looking for. Please try again!</p>
+        `;
         searchResultsCount.innerHTML = ``;
       }
     });
