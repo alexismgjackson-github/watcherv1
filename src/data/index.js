@@ -344,7 +344,7 @@ function handleClickSearch(event) {
   fetchMovies(yarn.value);
 }
 
-// send a request to the movie database API, passing the search query (inputValue) and API key
+// send a request to TMDB API, passing the search query (inputValue) and API key
 // once the data is fetched, filter out the movies that don’t have a poster, overview and genres
 // render them on the page and updates the UI to display the number of movies found
 // if no results are found, show a message to the user indicating that no movies were found and ask them to try again
