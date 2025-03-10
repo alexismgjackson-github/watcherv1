@@ -2,7 +2,7 @@
   --font-logo: "Bowlby One", sans-serif;
   --font-primary: "Inter", system-ui;
   --color-extralight: #fff;
-  --color-light: hsl(0, 2%, 60%);
+  --color-light: #c1bebe;
   --color-medium: #484848;
   --color-bold: #23252b;
   --color-extrabold: #000;
@@ -343,7 +343,7 @@ hr {
 }
 
 .search-results-count {
-  color: var(--color-light);
+  color: var(--color-extralight);
   font-size: 1.4rem;
   font-style: italic;
 }
