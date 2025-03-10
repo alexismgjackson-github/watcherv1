@@ -5,7 +5,7 @@ Watcher is a fully responsive app allows that the user to search for movies and 
 ## FEATURES
 
 - Firebase Authentication
-- Firebase Firestore
+- Firestore Database
 - Movie Searchbar
 - Movie Watchlist Modal
 
