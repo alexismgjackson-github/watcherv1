@@ -25,7 +25,7 @@ import {
 // ======== Firebase setup  ============================================================= ////
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD3oXhhIntMetNecqI5f5NwOIz5BKD7dOw",
+  apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY,
   authDomain: "watcher-d12f5.firebaseapp.com",
   projectId: "watcher-d12f5",
   storageBucket: "watcher-d12f5.appspot.com",
