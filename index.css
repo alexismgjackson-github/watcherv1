@@ -72,6 +72,7 @@ input {
 
 button {
   font-weight: 500;
+  touch-action: manipulation;
   transition: 0.25s;
 }
 
@@ -508,7 +509,7 @@ hr {
 }
 
 .empty-watchlist {
-  color: var(--color-medium);
+  opacity: 0.5;
   font-style: italic;
   margin: auto;
 }
