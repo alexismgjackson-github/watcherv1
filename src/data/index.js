@@ -74,6 +74,7 @@ const viewRegisterAuthBtn = document.getElementById("view-register-auth-btn");
 // ======== UI - Elements - LOGGED IN VIEW (SEARCH)  ============================================================= ////
 
 const viewLoggedIn = document.getElementById("logged-in-view");
+const watchlistCount = document.getElementById("watchlist-count");
 const viewWatchlistBtn = document.getElementById("view-watchlist-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const yarn = document.getElementById("search-bar");
@@ -122,25 +123,28 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
-// if the user is LOGGED IN - query the "movies" collection for the user's movies
-// wait for the movies to be fetched
-// log each movie title to the console
-// render the movie data on the page
-// after a 2-second delay, it displays the logged-in view
-// if the user is LOGGED OUT - wait for 500ms and then show the logged-out view
-// log to the console that no user is currently signed in
-
 onAuthStateChanged(auth, (user) => {
+  // if the user is LOGGED IN
+  // show a success message
+  // wait 2 seconds, then shows the logged-in UI
+
   if (user) {
     showCreateAccountSuccess();
 
+    // preparing a query to fetch all movies in Firestore that belong to the current user, based on the user's unique ID
     const uid = user.uid;
     const q = query(collection(db, "movies"), where("uid", "==", uid));
 
     setTimeout(showLoggedInView, 2000);
 
+    // query firestore for the user's movie watchlist
+    // display the number of movies and renders each one in the UI
+    // log relevant info
+
     try {
       getDocs(q).then((querySnapshot) => {
+        const watchlistLength = querySnapshot.size;
+        watchlistCount.innerHTML = `${watchlistLength}`;
         querySnapshot.forEach((doc) => {
           console.log(
             `User ${user.uid} currently has "${doc.data().title}" in watchlist`
@@ -153,6 +157,10 @@ onAuthStateChanged(auth, (user) => {
     }
     console.log(`User ${user.uid} is logged in!`);
   } else {
+    // if the user is not LOGGED IN
+    // if the user is LOGGED OUT - wait for 500ms and then show the logged-out view
+    // log to the console that no user is currently signed in
+
     setTimeout(showLoggedOutView, 500);
     console.log("No user is currently signed in");
   }

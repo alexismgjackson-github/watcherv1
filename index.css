@@ -275,7 +275,16 @@ hr {
 .search-nav-btns {
   align-items: center;
   display: flex;
-  gap: 2rem;
+}
+
+.watchlist-count {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.view-watchlist-btn {
+  margin-left: 0.75rem;
+  margin-right: 2rem;
 }
 
 .view-watchlist-btn,
