@@ -26,7 +26,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 
 ## WHAT I LEARNED
 
-### _FIREBASE AUHTENTICATION_
+### _FIREBASE AUTHENTICATION_
 
 - Understanding the basics of authentication in web apps
 - Setting up Firebase in a web app for managing authentication
