@@ -24,6 +24,7 @@ import {
 
 // ======== Firebase setup  ============================================================= ////
 
+// firebase configuration object for initializing a firebase app
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY,
   authDomain: "watcher-d12f5.firebaseapp.com",
@@ -153,7 +154,7 @@ onAuthStateChanged(auth, (user) => {
         });
       });
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
     console.log(`User ${user.uid} is logged in!`);
   } else {
@@ -162,15 +163,13 @@ onAuthStateChanged(auth, (user) => {
     // log to the console that no user is currently signed in
 
     setTimeout(showLoggedOutView, 500);
-    console.log("No user is currently signed in");
+    // console.log("No user is currently signed in");
   }
 });
 
 // ======== Functions - Firebase  ============================================================= ////
 
-// when the user is LOGGED IN reset the input fields
-// clear messages to the user
-// or if log in fails show user error messages
+// logging in a user with email and password using firebase authentication
 
 function authLogInWithEmail() {
   const email = loginEmailInput.value;
@@ -183,10 +182,12 @@ function authLogInWithEmail() {
       const user = auth.currentUser;
     })
     .catch((error) => {
-      console.error(error.message);
+      // console.error(error.message);
       showUserError();
     });
 }
+
+//  creating a new user account with an email and password using firebase authentication
 
 function authCreateAccWithEmail() {
   const email = registerEmailInput.value;
@@ -197,10 +198,12 @@ function authCreateAccWithEmail() {
       showCreateAccountSuccess();
     })
     .catch((error) => {
-      console.error(error.message);
+      // console.error(error.message);
       showCreateAccountError();
     });
 }
+
+// logging out the currently authenticated user with firebase
 
 function authSignOut() {
   signOut(auth)
