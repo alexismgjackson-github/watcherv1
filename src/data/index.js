@@ -25,6 +25,7 @@ import {
 // ======== Firebase setup  ============================================================= ////
 
 // firebase configuration object for initializing a firebase app
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY,
   authDomain: "watcher-d12f5.firebaseapp.com",
