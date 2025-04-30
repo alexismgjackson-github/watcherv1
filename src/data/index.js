@@ -148,9 +148,9 @@ onAuthStateChanged(auth, (user) => {
         const watchlistLength = querySnapshot.size;
         watchlistCount.innerHTML = `${watchlistLength}`;
         querySnapshot.forEach((doc) => {
-          console.log(
+          {/*console.log(
             `User ${user.uid} currently has "${doc.data().title}" in watchlist`
-          );
+          );*/}
           renderMoviesHtmlInWatchlist(watchlistContainer, doc.data());
         });
       });
@@ -214,7 +214,7 @@ function authSignOut() {
       resetCreateAcccountMessages();
     })
     .catch((error) => {
-      console.error(error.message);
+      // console.error(error.message);
     });
 }
 
@@ -454,11 +454,11 @@ async function addMovieToWatchlist(event) {
         id: dataAttribute.id,
         uid: user.uid,
       });
-      console.log(`Movie written with ID: ${dataAttribute.id} `);
+      // console.log(`Movie written with ID: ${dataAttribute.id} `);
       alert("Movie added to watchlist");
       location.reload(); // temporary solution to render watchlist changes
     } catch (error) {
-      console.error("Error adding movie: ", error.message);
+      // console.error("Error adding movie: ", error.message);
     }
   }
 }
@@ -531,11 +531,11 @@ async function deleteMovieFromWatchlist(event) {
         id: dataAttribute.id,
         uid: user.uid,
       });
-      console.log(`Delete movie written with ID: ${dataAttribute.id} `);
+      // console.log(`Delete movie written with ID: ${dataAttribute.id} `);
       alert("Movie deleted from watchlist");
       location.reload(); // temporary solution to render watchlist changes
     } catch (error) {
-      console.error("Error deleting movie: ", error.message);
+      // console.error("Error deleting movie: ", error.message);
     }
   }
 }
