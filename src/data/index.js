@@ -148,9 +148,11 @@ onAuthStateChanged(auth, (user) => {
         const watchlistLength = querySnapshot.size;
         watchlistCount.innerHTML = `${watchlistLength}`;
         querySnapshot.forEach((doc) => {
-          {/*console.log(
+          {
+            /*console.log(
             `User ${user.uid} currently has "${doc.data().title}" in watchlist`
-          );*/}
+          );*/
+          }
           renderMoviesHtmlInWatchlist(watchlistContainer, doc.data());
         });
       });
