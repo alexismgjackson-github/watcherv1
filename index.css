@@ -187,14 +187,14 @@ hr {
 
 .login-email-input,
 .register-email-input {
-  background-image: url("public/assets/icons/mail.svg");
+  background-image: url("/assets/icons/mail.svg");
   background-position: 3.5% 50%;
   background-repeat: no-repeat;
 }
 
 .login-password-input,
 .register-password-input {
-  background-image: url("public/assets/icons/lock.svg");
+  background-image: url("/assets/icons/lock.svg");
   background-position: 3.5% 50%;
   background-repeat: no-repeat;
 }
@@ -307,7 +307,7 @@ hr {
 }
 
 .search {
-  margin-bottom: 10rem;
+  margin-bottom: 6rem;
 }
 
 .search-heading {
@@ -324,7 +324,7 @@ hr {
 }
 
 .search-bar {
-  background-image: url("public/assets/icons/search.svg");
+  background-image: url("/assets/icons/search.svg");
   background-position: 2.125% 50%;
   background-repeat: no-repeat;
 }
@@ -360,7 +360,7 @@ hr {
 
 .search-results {
   display: grid;
-  gap: 6rem;
+  gap: 4rem;
 }
 
 .search-message {
@@ -395,6 +395,10 @@ hr {
   line-height: 2.8rem;
 }
 
+.movie-overview {
+  font-size: 1.5rem;
+}
+
 .movie-btn-container {
   margin: auto;
 }
@@ -406,8 +410,10 @@ hr {
   border-style: none;
   color: var(--color-extrabold);
   display: flex;
+  margin: auto;
   padding: 1rem 1.5rem;
   position: relative;
+  width: fit-content;
 }
 
 .add-to-watchlist-btn:hover {
@@ -477,13 +483,14 @@ hr {
 }
 
 .watchlist-movie-container {
-  margin: 4rem 0;
+  margin: 3rem 0 4rem 0;
 }
 
 .watchlist-movie {
   display: grid;
   font-style: normal;
   gap: 3rem;
+  margin-bottom: 3rem;
 }
 
 .watchlist-movie-primary {
@@ -491,12 +498,16 @@ hr {
 }
 
 .watchlist-movie-poster {
-  width: 30rem;
+  width: 100%;
 }
 
 .watchlist-movie-secondary {
   display: grid;
   gap: 2rem;
+}
+
+.watchlist-movie-secondary p {
+  font-size: 1.4rem;
 }
 
 .watchlist-btn-container {
@@ -510,7 +521,9 @@ hr {
   border-style: none;
   color: var(--color-extralight);
   display: flex;
+  margin: auto;
   padding: 1rem 1.5rem;
+  width: fit-content;
 }
 
 .delete-from-watchlist-icon {
@@ -571,6 +584,10 @@ hr {
     margin: 0;
   }
 
+  .watchlist-movie-poster {
+    width: 55rem;
+  }
+
   .movie-poster {
     width: 35rem;
   }
@@ -588,10 +605,6 @@ hr {
 
   .modal {
     padding: 5rem;
-  }
-
-  .watchlist-movie-poster {
-    width: 60rem;
   }
 
   .watchlist-movie-secondary {

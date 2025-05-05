@@ -15,7 +15,7 @@ import {
   getFirestore,
   collection,
   doc,
-  setDoc,
+  addDoc,
   getDocs,
   deleteDoc,
   query,
@@ -115,11 +115,11 @@ viewWatchlistBtn.addEventListener("click", showWatchlistModal);
 
 searchBtn.addEventListener("click", handleClickSearch);
 
-searchResults.addEventListener("dblclick", addMovieToWatchlist);
+searchResults.addEventListener("click", addMovieToWatchlist);
 
 // ======== UI - Event listeners - LOGGED IN VIEW (WATCHLIST - MODAL)  ============================================================= ////
 
-watchlistContainer.addEventListener("dblclick", deleteMovieFromWatchlist);
+watchlistContainer.addEventListener("click", deleteMovieFromWatchlist);
 
 closeModalBtn.addEventListener("click", closeWatchlistModal);
 
@@ -185,7 +185,7 @@ function authLogInWithEmail() {
       const user = auth.currentUser;
     })
     .catch((error) => {
-      // console.error(error.message);
+      // console.error("Login failed:", error.message);
       showUserError();
     });
 }
@@ -201,7 +201,7 @@ function authCreateAccWithEmail() {
       showCreateAccountSuccess();
     })
     .catch((error) => {
-      // console.error(error.message);
+      // console.error("Login failed:", error.message);
       showCreateAccountError();
     });
 }
@@ -212,11 +212,10 @@ function authSignOut() {
   signOut(auth)
     .then(() => {
       searchResults.innerHTML = "";
-      location.reload(); // temporary solution to render watchlist changes
       resetCreateAcccountMessages();
     })
     .catch((error) => {
-      // console.error(error.message);
+      // console.error("Login failed:", error.message);
     });
 }
 
@@ -358,110 +357,179 @@ function handleClickSearch(event) {
   fetchMovies(yarn.value);
 }
 
-// send a request to TMDB API, passing the search query (inputValue) and API key
-// once the data is fetched, filter out the movies that don’t have a poster, overview and genres
-// render them on the page and updates the UI to display the number of movies found
-// if no results are found, show a message to the user indicating that no movies were found and ask them to try again
+// Function to fetch movie data based on input search query
 
 function fetchMovies(inputValue) {
-  fetch(
-    `${baseUrl}3/search/movie?query=${inputValue}&api_key=${
-      import.meta.env.VITE_WATCHER_API_KEY // Vite only exposes environment variables prefixed with VITE_
-    }`
-  )
-    .then((response) => response.json())
+  // Retrieve the API key from the environment variables, using Vite's build system
+  const apiKey = import.meta.env.VITE_WATCHER_API_KEY;
+
+  // Construct the URL for the movie search API request, encoding the search query for safety
+  const url = `${baseUrl}3/search/movie?query=${encodeURIComponent(
+    inputValue
+  )}&api_key=${
+    apiKey // Vite only exposes environment variables prefixed with VITE_
+  }`;
+
+  // Initiate a fetch request to the constructed URL
+  fetch(url)
+    .then((res) => res.json()) // Parse the response JSON into a JavaScript object
     .then((data) => {
-      const fetchedMovies = data.results;
-      const filteredFetchedMovies = fetchedMovies.filter(
+      // Filter the movies to ensure they have a poster, overview, and genre IDs (basic validation)
+      const movies = (data.results || []).filter(
         (movie) => movie.poster_path && movie.overview && movie.genre_ids
       );
-      // console.log(filteredFetchedMovies);
-      if (data.total_results > 0) {
-        renderFetchedMoviesHtml(filteredFetchedMovies);
-        // console.log(filteredFetchedMovies.length);
-        searchResultsCount.innerHTML = `${filteredFetchedMovies.length} movies found (DOUBLE CLICK to add/delete movies to/from watchlist!)`;
+
+      // Check if there are valid movies in the result
+      if (movies.length > 0) {
+        // If movies exist, render them on the page
+        renderFetchedMoviesHtml(movies);
+        // Update the result count display
+        searchResultsCount.innerText = `${movies.length} movies found`;
       } else {
-        // console.log("Zero results found");
-        searchResults.innerHTML = `
-        <p id="search-message" class="search-message">Unable to find what you are looking for. Please try again!</p>
-        `;
-        searchResultsCount.innerHTML = ``;
+        // If no movies found, display a friendly message and clear the result count
+        searchResults.innerHTML = `<p class="search-message">No results found. Try another title.</p>`;
+        searchResultsCount.innerText = "";
       }
-    });
+    })
+    .catch((err) => console.error("Error fetching movies:", err.message)); // Handle any errors that occur during the fetch operation
 }
 
-// render fetched movies and their details in search results container
-// add information (datasets) and an ID to each "Add To Watchlist" button
+// Function to refresh and update the UI of the user's watchlist
 
-function renderFetchedMoviesHtml(searchResultsArr) {
-  let html = "";
+async function refreshWatchlistUI() {
+  // Retrieve the current user's UID (user identifier) from the authentication state
+  const uid = auth.currentUser?.uid;
 
-  for (let movie of searchResultsArr) {
-    html += `
-  <div class="movie" id="movie">
-    <div class="movie-primary">
-      <img 
-        class="movie-poster"
-        src="https://image.tmdb.org/t/p/original${movie.poster_path}" 
-        alt="${movie.title} poster"
-        >
-    </div>
-    <div class="movie-secondary">
-      <h2 class="movie-heading">${movie.title}</h2>
-      <p class="movie-genres">GENRES : ${getMovieGenreName(
-        movie.genre_ids
-      ).join(", ")}
-      </p>
-      <p class="movie-overview">OVERVIEW : ${movie.overview}</p>
-      <div class="movie-btn-container">
+  // If no user is logged in, exit the function early
+  if (!uid) return;
+
+  // Create a query to fetch movies from the "movies" collection where the "uid" field matches the current user's UID
+  const q = query(collection(db, "movies"), where("uid", "==", uid));
+
+  // Fetch the documents matching the query from Firestore
+  const snapshot = await getDocs(q);
+
+  // Clear the existing watchlist UI by emptying the container
+  watchlistContainer.innerHTML = "";
+
+  // Update the display to show the total number of movies in the watchlist
+  watchlistCount.innerHTML = `${snapshot.size}`;
+
+  // Iterate through the fetched documents and render each movie in the UI
+  snapshot.forEach((docSnap) => {
+    // For each movie document, call the render function to add it to the watchlist container
+    renderMoviesHtmlInWatchlist(watchlistContainer, docSnap.data());
+  });
+}
+
+// Function to render the fetched movie data as HTML and display it on the page
+
+function renderFetchedMoviesHtml(movies) {
+  // Generate HTML for each movie in the array using map(), and join() to combine them into one string
+  const html = movies
+    .map(
+      (movie) => `
+    <div class="movie">
+      <div class="movie-primary">
+        <!-- Display movie poster image, with dynamic src based on poster path -->
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/original${
+          movie.poster_path
+        }" alt="${movie.title} poster">
+      </div>
+      <div class="movie-secondary">
+        <!-- Movie title -->
+        <h2>${movie.title}</h2>
+        
+        <!-- Display genres by calling the getMovieGenreName function to convert genre IDs to genre names -->
+        <p class="movie-genres">GENRES: ${getMovieGenreName(
+          movie.genre_ids
+        ).join(", ")}</p>
+        
+        <!-- Movie overview -->
+        <p class="movie-overview">OVERVIEW: ${movie.overview}</p>
+        
+        <!-- Button to add movie to watchlist, with movie data stored in data attributes -->
         <button class="add-to-watchlist-btn"
-          data-id="${movie.id}"  
-          data-poster="${movie.poster_path}" 
-          data-title="${movie.title}"
-          data-overview="${movie.overview}"
-          aria-label="Add movie to watchlist"
-          >  
+                data-id="${movie.id}"  
+                data-poster="${movie.poster_path}" 
+                data-title="${movie.title}"
+                data-overview="${movie.overview}">
           Add To Watchlist
         </button>
-        
       </div>
     </div>
-  </div>
-  <hr>
-      `;
-  }
+    <hr>
+  `
+    )
+    .join(""); // Combine the array of HTML strings into a single string
 
+  // Insert the generated HTML into the search results container
   searchResults.innerHTML = html;
+
+  // Clear the search input field after rendering results
   yarn.value = "";
-  // console.log(movie);
 }
 
-// when user doubleclicks on "Add To Watchlist" button in search results -
-// check if the target element has a data-id attribute
-// if its true, create an object of the movie's details with UID
-// add the movie object to the database (if it does not already exists)
-// reload page to render changes in the database
-// if an error occurs at any point, log an error message
+// Async function to add a movie to the user's watchlist when the button is clicked
 
 async function addMovieToWatchlist(event) {
-  if (event.target.dataset.id) {
-    let dataAttribute = event.target.dataset;
-    const user = auth.currentUser;
+  // Get the closest button element, ensuring it is the "add-to-watchlist-btn"
+  const button = event.target.closest(".add-to-watchlist-btn");
 
-    try {
-      const docRef = await setDoc(doc(db, "movies", dataAttribute.id), {
-        poster: dataAttribute.poster,
-        title: dataAttribute.title,
-        overview: dataAttribute.overview,
-        id: dataAttribute.id,
-        uid: user.uid,
-      });
-      // console.log(`Movie written with ID: ${dataAttribute.id} `);
-      alert("Movie added to watchlist");
-      location.reload(); // temporary solution to render watchlist changes
-    } catch (error) {
-      // console.error("Error adding movie: ", error.message);
+  // If the button isn't found, exit the function
+  if (!button) return;
+
+  // Extract movie data (id, poster, title, and overview) from the button's data attributes
+  const { id, poster, title, overview } = button.dataset;
+
+  // Retrieve the current user's UID (user identifier) from the authentication state
+  const uid = auth.currentUser?.uid;
+
+  // If no movie ID or user UID is found, exit the function
+  if (!id || !uid) return;
+
+  try {
+    // Check if the movie is already in the user's watchlist by querying the Firestore database
+    const existing = await getDocs(
+      query(
+        collection(db, "movies"),
+        where("uid", "==", uid),
+        where("id", "==", id) // Check for the movie by its unique ID
+      )
+    );
+
+    // If the movie is already in the watchlist, show an alert and stop further execution
+    if (!existing.empty) {
+      alert("Movie already in watchlist.");
+      return;
     }
+
+    // If the movie is not in the watchlist, add it to Firestore
+    await addDoc(collection(db, "movies"), {
+      id, // Movie ID
+      poster, // Movie poster path
+      title, // Movie title
+      overview, // Movie overview
+      uid, // Current user's UID
+    });
+
+    // Render the newly added movie to the watchlist UI
+    renderMoviesHtmlInWatchlist(watchlistContainer, {
+      id,
+      poster,
+      title,
+      overview,
+      uid,
+    });
+
+    // Refresh the watchlist UI to update the list of movies
+    refreshWatchlistUI();
+
+    // Display a success alert
+    alert("Movie added to watchlist!");
+  } catch (error) {
+    // If an error occurs, log it to the console
+    console.error("Error adding to watchlist:", error.message);
   }
 }
 
@@ -477,67 +545,87 @@ function closeWatchlistModal() {
   document.body.style.overflow = "scroll";
 }
 
-// render movies in the watchlist with dataset attributes
+// Function to render a movie's details in the user's watchlist
 
-function renderMoviesHtmlInWatchlist(watchlistContainer, movieData) {
+function renderMoviesHtmlInWatchlist(container, movieData) {
+  // Clear the current content of the watchlist (assuming emptyWatchlist is a predefined element)
   emptyWatchlist.innerHTML = "";
 
-  watchlistContainer.innerHTML += `
-  <li class="watchlist-movie-container" id="watchlist-movie-container">
-      <div class="watchlist-movie" id="watchlist-movie"> 
-        <div class="watchlist-movie-primary">
-          <img 
-          class="watchlist-movie-poster"
-          src="https://image.tmdb.org/t/p/original${movieData.poster}"
-          alt="${movieData.title} poster"
-          loading="lazy"
-          >
-        </div>
-        <div class="watchlist-movie-secondary">
-          <h2 class="watchlist-movie-heading">${movieData.title}</h2>
-          <p class="watchlist-overview">OVERVIEW : ${movieData.overview}</p>
-          <div class="watchlist-btn-container">
-            <button class="delete-from-watchlist-btn"
-              data-uid="${movieData.uid}" 
-              data-id="${movieData.id}"
-              data-poster="${movieData.poster}" 
-              data-title="${movieData.title}"
-              data-overview="${movieData.overview}"
-              aria-label="Delete movie from watchlist">
-              Delete From Watchlist
-            </button>
-          </div>
-        </div>
+  // Create a new list item element to hold the movie data
+  const item = document.createElement("li");
+  item.className = "watchlist-movie-container"; // Assign a CSS class to the list item
+
+  // Set the inner HTML of the item with movie details
+  item.innerHTML = `
+    <div class="watchlist-movie"> 
+      <div class="watchlist-movie-primary">
+        <!-- Movie poster image with lazy loading -->
+        <img class="watchlist-movie-poster" src="https://image.tmdb.org/t/p/original${movieData.poster}" alt="${movieData.title} poster" loading="lazy">
       </div>
-    </li>
-  <hr> 
-      `;
+      <div class="watchlist-movie-secondary">
+        <!-- Movie title -->
+        <h2>${movieData.title}</h2>
+        
+        <!-- Movie overview -->
+        <p>${movieData.overview}</p>
+        
+        <!-- Button to delete the movie from the watchlist -->
+        <button class="delete-from-watchlist-btn"
+                data-id="${movieData.id}">
+          Delete From Watchlist
+        </button>
+      </div>
+    </div>
+    <hr> <!-- Horizontal line to separate movies -->
+  `;
+
+  // Append the newly created list item to the provided container (the watchlist container)
+  container.appendChild(item);
 }
 
-// when user doubleclicks on "Delete From Watchlist" button in watchlist -
-// check if the target element has a data-id attribute
-// if its true, remove the movie object from the database
-// reload page to render changes in the database
-// if an error occurs at any point, log an error message
+// Async function to handle deleting a movie from the user's watchlist
 
 async function deleteMovieFromWatchlist(event) {
-  if (event.target.dataset.id) {
-    let dataAttribute = event.target.dataset;
-    const user = auth.currentUser;
+  // Get the delete button that triggered the event (ensure it's a delete button)
+  const deleteBtn = event.target.closest(".delete-from-watchlist-btn");
 
-    try {
-      const docRef = await deleteDoc(doc(db, "movies", dataAttribute.id), {
-        poster: dataAttribute.poster,
-        title: dataAttribute.title,
-        overview: dataAttribute.overview,
-        id: dataAttribute.id,
-        uid: user.uid,
-      });
-      // console.log(`Delete movie written with ID: ${dataAttribute.id} `);
-      alert("Movie deleted from watchlist");
-      location.reload(); // temporary solution to render watchlist changes
-    } catch (error) {
-      // console.error("Error deleting movie: ", error.message);
-    }
+  // If the clicked element is not the delete button, exit the function
+  if (!deleteBtn) return;
+
+  // Retrieve the movie ID from the button's data-id attribute
+  const movieId = event.target.dataset.id;
+
+  // Retrieve the current user's UID (user identifier) from the authentication state
+  const uid = auth.currentUser?.uid;
+
+  // If no movie ID or user UID is found, exit the function
+  if (!movieId || !uid) return;
+
+  try {
+    // Create a query to find the movie document in Firestore based on user UID and movie ID
+    const q = query(
+      collection(db, "movies"),
+      where("uid", "==", uid),
+      where("id", "==", movieId) // Look for the specific movie using its ID
+    );
+
+    // Fetch the document(s) matching the query
+    const snapshot = await getDocs(q);
+
+    // For each document returned, delete it from Firestore
+    snapshot.forEach((docSnap) => deleteDoc(doc(db, "movies", docSnap.id)));
+
+    // Remove the movie's HTML element from the DOM (watchlist UI)
+    const movieNode = event.target.closest("li");
+    if (movieNode) movieNode.remove();
+
+    // Refresh the watchlist UI to update the displayed list
+    refreshWatchlistUI();
+
+    // Display a success message
+    alert("Movie deleted from watchlist.");
+  } catch (error) {
+    // Log any errors that occur during the delete operation
+    console.error("Error deleting movie:", error.message);
   }
 }
