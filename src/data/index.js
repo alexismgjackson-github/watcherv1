@@ -24,7 +24,7 @@ import {
 
 // ======== Firebase setup  ============================================================= ////
 
-// firebase configuration object for initializing a firebase app
+// Firebase configuration object for initializing a firebase app
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY,
@@ -125,97 +125,115 @@ closeModalBtn.addEventListener("click", closeWatchlistModal);
 
 // ======== Main ============================================================= ////
 
-onAuthStateChanged(auth, (user) => {
-  // if the user is LOGGED IN
-  // show a success message
-  // wait 2 seconds, then shows the logged-in UI
+// Set up a listener for changes in the user's authentication state
 
+onAuthStateChanged(auth, (user) => {
+  // If a user is logged in
   if (user) {
+    // Show a success message or view indicating that the account has been created (or user is logged in)
     showCreateAccountSuccess();
 
-    // preparing a query to fetch all movies in Firestore that belong to the current user, based on the user's unique ID
+    // Get the user's unique identifier (UID)
     const uid = user.uid;
+
+    // Create a Firestore query to retrieve the movies for this specific user
     const q = query(collection(db, "movies"), where("uid", "==", uid));
 
+    // Delay the execution of showing the logged-in view for 2 seconds (simulating a loading period)
     setTimeout(showLoggedInView, 2000);
 
-    // query firestore for the user's movie watchlist
-    // display the number of movies and renders each one in the UI
-    // log relevant info
-
     try {
+      // Fetch the documents (movies) from Firestore
       getDocs(q).then((querySnapshot) => {
+        // Get the number of movies (size) in the user's watchlist
         const watchlistLength = querySnapshot.size;
+
+        // Update the UI to show the number of movies in the watchlist
         watchlistCount.innerHTML = `${watchlistLength}`;
+
+        // Loop through the query results (all movies in the user's watchlist)
         querySnapshot.forEach((doc) => {
-          {
-            /*console.log(
-            `User ${user.uid} currently has "${doc.data().title}" in watchlist`
-          );*/
-          }
+          // Render each movie in the watchlist using the renderMoviesHtmlInWatchlist function
           renderMoviesHtmlInWatchlist(watchlistContainer, doc.data());
         });
       });
     } catch (error) {
+      // Log any error that occurs during the query or rendering process (currently commented out)
       // console.log(error.message);
     }
+
+    // Log the user's UID for debugging (indicating that the user is logged in)
     console.log(`User ${user.uid} is logged in!`);
   } else {
-    // if the user is not LOGGED IN
-    // if the user is LOGGED OUT - wait for 500ms and then show the logged-out view
-    // log to the console that no user is currently signed in
-
+    // If no user is logged in, show the logged-out view after a short delay
     setTimeout(showLoggedOutView, 500);
+
+    // Log a message indicating no user is currently signed in (currently commented out)
     // console.log("No user is currently signed in");
   }
 });
 
 // ======== Functions - Firebase  ============================================================= ////
 
-// logging in a user with email and password using firebase authentication
+// Function to log in a user with email and password using Firebase Authentication
 
 function authLogInWithEmail() {
+  // Get the email and password entered by the user for login
   const email = loginEmailInput.value;
   const password = loginPasswordInput.value;
 
+  // Call Firebase's signInWithEmailAndPassword to authenticate the user
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      // If login is successful, reset any existing user messages
       resetUserMessage();
+
+      // Clear the email and password input fields for security and UX
       clearLoginAuthFields();
+
+      // Get the current authenticated user (optional use)
       const user = auth.currentUser;
     })
     .catch((error) => {
-      // console.error("Login failed:", error.message);
-      showUserError();
+      // If login fails, display an error message to the user
+      // console.error("Login failed:", error.message);  // Uncomment for debugging
+      showUserError(); // Show a user-friendly error message
     });
 }
 
-//  creating a new user account with an email and password using firebase authentication
+// Function to create a new user account with email and password using Firebase Authentication
 
 function authCreateAccWithEmail() {
+  // Get the email and password entered by the user for account registration
   const email = registerEmailInput.value;
   const password = registerPasswordInput.value;
 
+  // Call Firebase's createUserWithEmailAndPassword to create the account
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      // If account creation is successful, show a success message to the user
       showCreateAccountSuccess();
     })
     .catch((error) => {
-      // console.error("Login failed:", error.message);
-      showCreateAccountError();
+      // If account creation fails, show an error message to the user
+      // console.error("Account creation failed:", error.message);  // Uncomment for debugging
+      showCreateAccountError(); // Show a user-friendly error message
     });
 }
 
-// logging out the currently authenticated user with firebase
+// Function to log out the currently authenticated user using Firebase Authentication
 
 function authSignOut() {
+  // Call Firebase's signOut method to log out the user
   signOut(auth)
     .then(() => {
+      // After logging out, clear any search results and reset account-related messages
       searchResults.innerHTML = "";
-      resetCreateAcccountMessages();
+      resetCreateAcccountMessages(); // Reset any account creation/login messages
     })
     .catch((error) => {
-      // console.error("Login failed:", error.message);
+      // If sign out fails, you can handle the error (optional)
+      // console.error("Logout failed:", error.message);  // Uncomment for debugging
     });
 }
 
@@ -331,7 +349,7 @@ function clearRegisterAuthFields() {
   clearInputField(registerPasswordInput);
 }
 
-// allows user to toggle the visibility of their password
+// Allow the user to toggle the visibility of their password
 
 function showRegisterPassword() {
   if (registerPasswordInput.type === "password") {
