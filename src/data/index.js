@@ -33,9 +33,9 @@ const firebaseConfig = {
   storageBucket: "watcher-d12f5.appspot.com",
 };
 
-const app = initializeApp(firebaseConfig); // initialize firebase
-const auth = getAuth(app); // get a reference to the authentication service
-const db = getFirestore(app); // initialize cloud firestore and get a reference to the service
+const app = initializeApp(firebaseConfig); // Initialize firebase
+const auth = getAuth(app); // Get a reference to the authentication service
+const db = getFirestore(app); // Initialize cloud firestore and get a reference to the service
 
 // console.log(firebaseConfig.databaseURL);
 // console.log(getFirestore(app));

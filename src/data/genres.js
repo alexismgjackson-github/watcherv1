@@ -1,9 +1,9 @@
-// converts an array of genre IDs into their corresponding genre names
-// returns a new array containing the genre names
-// if an unknown genre ID is encountered, the function returns "Unknown Genre"
+// Function to map genre IDs to their corresponding genre names
 
 function getMovieGenreName(array) {
+  // Use the map function to iterate over the genre IDs in the provided array
   return array.map(function (id) {
+    // Switch statement to match each genre ID to its corresponding genre name
     switch (id) {
       case 28:
         return "Action";
@@ -44,9 +44,11 @@ function getMovieGenreName(array) {
       case 37:
         return "Western";
       default:
+        // Return "Unknown Genre" if the genre ID doesn't match any of the cases
         return "Unknown Genre";
     }
   });
 }
 
+// Export the function so it can be used in other parts of the application
 export { getMovieGenreName };
