@@ -71,11 +71,7 @@ This is the first project I have built as a Frontend Developer. It was inspired 
 ## BUGS
 
 - I have not been able to resolve the issue of the genres only displaying in the search results and not in the watchlist
-- I have to use location.reload() to force the app to update with the changes made to the database
 
 ## FUTURE UPDATES
 
-- Solve existing bugs
-- Convert app from JavaScript to React and React Router (maybe Watcher v2)
-- Add filtering of movies via genres in the watchlist
-- Toggle completed of movies in the watchlist
+- Solve existing bug
