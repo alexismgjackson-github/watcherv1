@@ -1,16 +1,15 @@
 // ========  Imports  ============================================================= ////
 
-import { getMovieGenreName } from "./genres.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-
+// Import helper functions and Firebase services
+import { getMovieGenreName } from "./genres.js"; // A custom helper to get genre names.
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js"; // Firebase initialization.
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js"; // Firebase authentication services.
 import {
   getFirestore,
   collection,
@@ -20,108 +19,105 @@ import {
   deleteDoc,
   query,
   where,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; // Firebase Firestore services.
 
 // ======== Firebase setup  ============================================================= ////
 
-// Firebase configuration object for initializing a firebase app
-
+// Firebase configuration object for initializing a Firebase app
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY,
-  authDomain: "watcher-d12f5.firebaseapp.com",
-  projectId: "watcher-d12f5",
-  storageBucket: "watcher-d12f5.appspot.com",
+  apiKey: import.meta.env.VITE_FIREBASE_WATCHERV1_API_KEY, // Secure API key from environment variables
+  authDomain: "watcher-d12f5.firebaseapp.com", // Firebase Auth domain
+  projectId: "watcher-d12f5", // Firebase project ID
+  storageBucket: "watcher-d12f5.appspot.com", // Firebase storage bucket
 };
 
-const app = initializeApp(firebaseConfig); // Initialize firebase
-const auth = getAuth(app); // Get a reference to the authentication service
-const db = getFirestore(app); // Initialize cloud firestore and get a reference to the service
-
-// console.log(firebaseConfig.databaseURL);
-// console.log(getFirestore(app));
+// Initialize Firebase with the provided configuration
+const app = initializeApp(firebaseConfig); // Initialize Firebase app
+const auth = getAuth(app); // Get Firebase authentication service
+const db = getFirestore(app); // Initialize Firestore database
 
 // ======== API setup  ============================================================= ////
 
-const baseUrl = "https://api.themoviedb.org/";
+const baseUrl = "https://api.themoviedb.org/"; // Base URL for The Movie Database API (used for fetching movie data)
 
 // ======== UI - Elements - LOGGED OUT VIEW (LOGIN)  ============================================================= ////
 
+// UI elements for the login view (when the user is not logged in)
 const viewLoggedOutLogin = document.getElementById("logged-out-view-login");
-const userAuthContainer = document.getElementById("user-auth-container");
-const loginEmailInput = document.getElementById("login-email-input");
-const loginPasswordInput = document.getElementById("login-password-input");
-const loginShowPasswordBtn = document.getElementById("login-show-password-btn");
-const loginBtn = document.getElementById("login-btn");
-const viewLoginAuthBtn = document.getElementById("view-login-auth-btn");
+const userAuthContainer = document.getElementById("user-auth-container"); // Container for user authentication messages
+const loginEmailInput = document.getElementById("login-email-input"); // Login email input field
+const loginPasswordInput = document.getElementById("login-password-input"); // Login password input field
+const loginShowPasswordBtn = document.getElementById("login-show-password-btn"); // Button to toggle password visibility
+const loginBtn = document.getElementById("login-btn"); // Button to trigger login
+const viewLoginAuthBtn = document.getElementById("view-login-auth-btn"); // Button to show registration form
 
 // ======== UI - Elements - LOGGED OUT VIEW (REGISTER)  ============================================================= ////
 
+// UI elements for the registration view (when the user is not logged in)
 const viewLoggedOutRegister = document.getElementById(
   "logged-out-view-register"
 );
-const emailAuthContainer = document.getElementById("email-auth-container");
+const emailAuthContainer = document.getElementById("email-auth-container"); // Container for email authentication messages
 const passwordAuthContainer = document.getElementById(
   "password-auth-container"
-);
-const registerEmailInput = document.getElementById("register-email-input");
+); // Container for password authentication messages
+const registerEmailInput = document.getElementById("register-email-input"); // Register email input field
 const registerPasswordInput = document.getElementById(
   "register-password-input"
-);
+); // Register password input field
 const registerShowPasswordBtn = document.getElementById(
   "register-show-password-btn"
-);
-const signupBtn = document.getElementById("signup-btn");
-const viewRegisterAuthBtn = document.getElementById("view-register-auth-btn");
+); // Button to toggle password visibility during registration
+const signupBtn = document.getElementById("signup-btn"); // Button to trigger registration
+const viewRegisterAuthBtn = document.getElementById("view-register-auth-btn"); // Button to view login form
 
 // ======== UI - Elements - LOGGED IN VIEW (SEARCH)  ============================================================= ////
 
+// UI elements for the logged-in view (search functionality and watchlist management)
 const viewLoggedIn = document.getElementById("logged-in-view");
-const watchlistCount = document.getElementById("watchlist-count");
-const viewWatchlistBtn = document.getElementById("view-watchlist-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const yarn = document.getElementById("search-bar");
-const searchBtn = document.getElementById("search-btn");
-const searchResultsCount = document.getElementById("search-results-count");
-const searchResults = document.getElementById("search-results");
+const watchlistCount = document.getElementById("watchlist-count"); // Display the count of movies in the watchlist
+const viewWatchlistBtn = document.getElementById("view-watchlist-btn"); // Button to view the watchlist
+const logoutBtn = document.getElementById("logout-btn"); // Button to trigger logout
+const yarn = document.getElementById("search-bar"); // Search bar input field
+const searchBtn = document.getElementById("search-btn"); // Button to trigger search
+const searchResultsCount = document.getElementById("search-results-count"); // Display the number of search results
+const searchResults = document.getElementById("search-results"); // Container for search results
 
 // ======== UI - Elements - LOGGED IN VIEW (WATCHLIST - MODAL)  ============================================================= ////
 
-let watchlistContainer = document.getElementById("watchlist-container");
-const modal = document.getElementById("modal");
-const closeModalBtn = document.getElementById("close-modal-btn");
-const emptyWatchlist = document.getElementById("empty-watchlist");
+// UI elements for the watchlist modal
+let watchlistContainer = document.getElementById("watchlist-container"); // Container for the watchlist items
+const modal = document.getElementById("modal"); // Modal for displaying watchlist
+const closeModalBtn = document.getElementById("close-modal-btn"); // Button to close the modal
+const emptyWatchlist = document.getElementById("empty-watchlist"); // Display message when the watchlist is empty
 
 // ======== UI - Event listeners - LOGGED OUT VIEW (LOGIN)  ============================================================= ////
 
-loginBtn.addEventListener("click", authLogInWithEmail);
-
-loginShowPasswordBtn.addEventListener("click", showLoginPassword);
-
-viewRegisterAuthBtn.addEventListener("click", showRegistration);
+// Event listeners for the login view
+loginBtn.addEventListener("click", authLogInWithEmail); // Trigger login function when login button is clicked
+loginShowPasswordBtn.addEventListener("click", showLoginPassword); // Toggle password visibility when the button is clicked
+viewRegisterAuthBtn.addEventListener("click", showRegistration); // Show registration view when the button is clicked
 
 // ======== UI - Event listeners - LOGGED OUT VIEW (REGISTER)  ============================================================= ////
 
-signupBtn.addEventListener("click", authCreateAccWithEmail);
-
-registerShowPasswordBtn.addEventListener("click", showRegisterPassword);
-
-viewLoginAuthBtn.addEventListener("click", showLogin);
+// Event listeners for the register view
+signupBtn.addEventListener("click", authCreateAccWithEmail); // Trigger registration function when signup button is clicked
+registerShowPasswordBtn.addEventListener("click", showRegisterPassword); // Toggle password visibility when the button is clicked
+viewLoginAuthBtn.addEventListener("click", showLogin); // Show login view when the button is clicked
 
 // ======== UI - Event listeners - LOGGED IN VIEW (SEARCH)  ============================================================= ////
 
-logoutBtn.addEventListener("click", authSignOut);
-
-viewWatchlistBtn.addEventListener("click", showWatchlistModal);
-
-searchBtn.addEventListener("click", handleClickSearch);
-
-searchResults.addEventListener("click", addMovieToWatchlist);
+// Event listeners for the logged-in view (search, logout, and watchlist management)
+logoutBtn.addEventListener("click", authSignOut); // Trigger logout function when logout button is clicked
+viewWatchlistBtn.addEventListener("click", showWatchlistModal); // Show the watchlist modal when the button is clicked
+searchBtn.addEventListener("click", handleClickSearch); // Perform search when search button is clicked
+searchResults.addEventListener("click", addMovieToWatchlist); // Add selected movie to the watchlist
 
 // ======== UI - Event listeners - LOGGED IN VIEW (WATCHLIST - MODAL)  ============================================================= ////
 
-watchlistContainer.addEventListener("click", deleteMovieFromWatchlist);
-
-closeModalBtn.addEventListener("click", closeWatchlistModal);
+// Event listeners for managing the watchlist in the modal
+watchlistContainer.addEventListener("click", deleteMovieFromWatchlist); // Delete movie from watchlist when clicked
+closeModalBtn.addEventListener("click", closeWatchlistModal); // Close the modal when the close button is clicked
 
 // ======== Main ============================================================= ////
 
@@ -239,40 +235,63 @@ function authSignOut() {
 
 // ======== Functions - UI  ============================================================= ////
 
+// Function to show a view using flexbox layout
 function showViewInFlex(view) {
+  // Set the display property of the view to "flex"
   view.style.display = "flex";
 }
 
+// Function to show a view using grid layout
 function showViewInGrid(view) {
+  // Set the display property of the view to "grid"
   view.style.display = "grid";
 }
 
+// Function to hide a view
 function hideView(view) {
+  // Set the display property of the view to "none" (hide it)
   view.style.display = "none";
 }
 
+// Function to clear the value of an input field
 function clearInputField(field) {
+  // Set the value of the field to an empty string, effectively clearing it
   field.value = "";
 }
 
 // ======== Functions - UI - LOGGED OUT VIEW (LOGIN) ============================================================= ////
 
+// Function to show the view when the user is logged out
 function showLoggedOutView() {
+  // Hide the logged-in view
   hideView(viewLoggedIn);
+
+  // Show the login view in the grid layout for logged-out users
   showViewInGrid(viewLoggedOutLogin);
 }
 
+// Function to show the login view, reset messages, and clear fields
 function showLogin() {
+  // Reset any account creation messages
   resetCreateAcccountMessages();
+
+  // Clear the login form fields
   clearLoginAuthFields();
+
+  // Hide the registration view when showing the login view
   hideView(viewLoggedOutRegister);
+
+  // Show the login view in the grid layout
   showViewInGrid(viewLoggedOutLogin);
 }
 
+// Function to reset user authentication messages (clear them)
 function resetUserMessage() {
+  // Clears the content inside the userAuthContainer
   userAuthContainer.innerHTML = "";
 }
 
+// Function to display an error message for invalid login credentials
 function showUserError() {
   userAuthContainer.innerHTML = `
   <div class="user-error" id="user-error">
@@ -283,36 +302,53 @@ function showUserError() {
   `;
 }
 
+// Function to clear the login input fields (email and password)
 function clearLoginAuthFields() {
   clearInputField(loginEmailInput);
   clearInputField(loginPasswordInput);
 }
 
+// Function to toggle the visibility of the login password
 function showLoginPassword() {
+  // Check if the password input is currently of type "password"
   if (loginPasswordInput.type === "password") {
+    // Change password field to show text (password visible)
     loginPasswordInput.type = "text";
+    // Change button opacity to indicate password visibility
     loginShowPasswordBtn.style.opacity = 1;
   } else {
+    // Change password field back to password (hidden)
     loginPasswordInput.type = "password";
+    // Change button opacity to indicate password is hidden
     loginShowPasswordBtn.style.opacity = 0.5;
   }
 }
 
 // ======== Functions - UI - LOGGED OUT VIEW (REGISTER)  ============================================================= ////
 
+// Function to show the registration form when the user is logged out
 function showRegistration() {
+  // Reset any previous user messages
   resetUserMessage();
+
+  // Clear the registration fields
   clearRegisterAuthFields();
+
+  // Hide the login view and display the registration view
   hideView(viewLoggedOutLogin);
   showViewInGrid(viewLoggedOutRegister);
 }
 
+// Function to reset any messages related to account creation (email & password errors/success)
 function resetCreateAcccountMessages() {
+  // Clear email and password containers
   emailAuthContainer.innerHTML = "";
   passwordAuthContainer.innerHTML = "";
 }
 
+// Function to display success messages for account creation (email and password)
 function showCreateAccountSuccess() {
+  // Success message for email creation
   emailAuthContainer.innerHTML = `
   <div class="email-success" id="email-success">
     <p class="email-auth-message success">
@@ -320,6 +356,7 @@ function showCreateAccountSuccess() {
     </p>
   </div>`;
 
+  // Success message for password creation
   passwordAuthContainer.innerHTML = `
   <div class="password-success" id="password-success">
     <p class="password-auth-message success">
@@ -328,14 +365,17 @@ function showCreateAccountSuccess() {
   </div>`;
 }
 
+// Function to display error messages for account creation (email and password)
 function showCreateAccountError() {
+  // Error message for email creation
   emailAuthContainer.innerHTML = `
   <div class="email-error" id="email-error">
     <p class="email-auth-message error">
-    Please enter a fake email address.
+      Please enter a fake email address.
     </p>
   </div>`;
 
+  // Error message for password creation
   passwordAuthContainer.innerHTML = `
   <div class="password-error" id="password-error">
     <p class="password-auth-message error">
@@ -344,7 +384,9 @@ function showCreateAccountError() {
   </div>`;
 }
 
+// Function to clear the registration input fields (email and password)
 function clearRegisterAuthFields() {
+  // Clear the email and password input fields
   clearInputField(registerEmailInput);
   clearInputField(registerPasswordInput);
 }
@@ -363,15 +405,27 @@ function showRegisterPassword() {
 
 // ======== Functions - UI - LOGGED IN VIEW (SEARCH)  ============================================================= ////
 
+// Function to show the view when the user is logged in
 function showLoggedInView() {
+  // Hide the login view when the user is logged in
   hideView(viewLoggedOutLogin);
+
+  // Hide the registration view when the user is logged in
   hideView(viewLoggedOutRegister);
+
+  // Show the logged-in view in the grid layout
   showViewInGrid(viewLoggedIn);
 }
 
+// Function to handle the search button click
 function handleClickSearch(event) {
+  // Prevent the default form submission behavior (to avoid page reload)
   event.preventDefault();
+
+  // Uncomment to check when the search button is clicked
   // console.log("search button clicked!");
+
+  // Call the function to fetch movies, passing the value from the search input
   fetchMovies(yarn.value);
 }
 
